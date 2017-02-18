@@ -1,22 +1,19 @@
-import r2pipe, sys
+#!/usr/bin/env python
+import r2pipe, sys, termios, os
 
 r2 = r2pipe.open()
 
 # Handle interruption
 def handle_intr(number):
   if number == 0x1:
-    sys.stdout.write(r2.cmd("pvz @ rax"))
-    sys.stdout.flush()
+    rax = r2.cmd("aer rax")
+    print(r2.cmd("pvz @ {}".format(rax)))
 
   elif number == 0x2:
-    text = sys.stdin.read(1)
-    r2.cmd("w {} @ {}".format(text, r2.cmd("ar rax")))
+    text = raw_input()
+    rax = r2.cmd("aer rax")
+    r2.cmd("w {} @ {}".format(text, rax))
 
-  elif number == 0xFF:
-    print("Exiting vm")
-    r2.cmd("qq")
-
-#sys.stdout.write("Sycall")
 handle_intr(int(sys.argv[1], 0))
 
 r2.quit()

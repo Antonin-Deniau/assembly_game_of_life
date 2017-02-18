@@ -10,12 +10,10 @@ main:
   mov rax, hello
   int 0x1
 
-	int 0xFF
-
 strings:
-  welcome db "Whats your name", 0
-  hello db "Hello", 0
-	buffer db ""
+  welcome db "Whats your name ?", 0
+  hello db "Hello "
+  buffer db ""
 
 ; print 1
 ; read  2
