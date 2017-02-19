@@ -5,9 +5,26 @@ draw_dot:
   push rbx
   mov rbx, rsp
 
-  imul rdi, 100
-  add rdi, rsi
-  mov [screen + rdi], dl
+  mov rax, rdi
+
+  imul rax, 100
+  add rax, rsi
+  mov [screen + rax], dl
+
+  pop rbx
+  ret
+
+; rdi x
+; rsi y
+get_dot:
+  push rbx
+  mov rbx, rsp
+
+  mov rax, rdi
+
+  imul rax, 100
+  add rax, rsi
+  mov rax, [screen + rax]
 
   pop rbx
   ret
@@ -26,6 +43,7 @@ sleep:
   push rbx
   mov rbx, rsp
 
+  mov eax, edi
   int 0x2
 
   pop rbx
@@ -35,7 +53,7 @@ refresh_screen:
   push rbx
   mov rbx, rsp
 
-  mov rdi, screen
+  mov rax, screen
   int 0x1
 
   pop rbx
