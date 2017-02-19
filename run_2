@@ -1,49 +1,53 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
+import curses, time
 from unicorn import *
 from unicorn.x86_const import *
+
+s = curses.initscr()
+
+width = 100
+height = 50
+
+def draw_dots(matrix):
+  lines = [matrix[i:i + width] for i in range(0, len(matrix), width)]
+  print lines[0]
+
+  for w in range(0, width):
+    for h in range(0, height):
+      dot = chr(lines[h][w])
+      s.addstr(h, w, dot)
+
+def draw_screen(uc):
+  offset = uc.reg_read(UC_X86_REG_RAX)
+  matrix = uc.mem_read(offset, width * height)
+  draw_dots(matrix)
+  s.refresh()
 
 ADDRESS = 0x0
 
 def hook_intr(uc, intno, user_data):
-  if intno == 0x1:
+  if intno == 0x1: # refresh
+    draw_screen(uc)
+
+  if intno == 0x2: # sleep
     rax = uc.reg_read(UC_X86_REG_RAX)
+    time.sleep(rax)
 
-    buf = ""
-    overflow = 0
-    overflow_limit = 1000
-    while True:
-      byte = uc.mem_read(rax + overflow, 1)
-      overflow += 1
-      if byte == "\x00":
-        print(buf)
-        break
-      elif overflow >= overflow_limit:
-        break
-      else:
-        buf += byte
-
-  elif intno == 0x2:
-    rax = uc.reg_read(UC_X86_REG_RAX)
-    text = raw_input()
-    uc.mem_write(rax, text)
-
-
-  elif intno == 0xFF:
+  elif intno == 0xFF: #exit
     uc.emu_stop()
 
-def test_i386(mode, code):
+def run(mode, code):
   try:
     mu = Uc(UC_ARCH_X86, mode)
     mu.mem_map(ADDRESS, 2 * 1024 * 1024)
+    mu.reg_write(UC_X86_REG_ESP, ADDRESS + 0x200000)
     mu.mem_write(ADDRESS, code)
     mu.hook_add(UC_HOOK_INTR, hook_intr)
     mu.emu_start(ADDRESS, ADDRESS + len(code))
-    print(">>> Emulation done")
   except UcError as e:
     print("ERROR: %s" % e)
 
 with open("./os", "rb") as binary_file:
   data = binary_file.read()
-  test_i386(UC_MODE_64, data)
+  run(UC_MODE_64, data)
