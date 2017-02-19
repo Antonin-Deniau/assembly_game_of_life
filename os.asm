@@ -15,6 +15,24 @@ main:
   mov rdi, 1
   call sleep
 
+  mov rdi, 4
+  mov rsi, 4
+  call test_cell
+
+  ;mov rdx, "0x42"
+  ;cmp rax, 1
+  ;je is_res_alive
+  ;  mov rdx, "0x41"
+  ;is_res_alive:
+
+  ;mov rdi, 1
+  ;mov rsi, 1
+  ;mov rdx, rax
+  ;call draw_dot
+
+  ;mov rdi, 1
+  ;call sleep
+
   call exit
 
   pop rbx
@@ -42,26 +60,37 @@ test_cell:
   mov rbx, rsp
 
   mov r10, 0 ; alive_count
+  mov r11, rdi ; x
+  mov r12, rsi ; y
 
   ;;;; UPPER
 
   ; upper left
-  sub rdi, 1
-  sub rsi, 1
+  sub r11, 1
+  sub r12, 1
+
+  mov rdi, r11
+  mov rsi, r12
   call get_dot
   mov rdi, rax
   call dead_or_alive
   add r10, rax
 
   ; upper middle
-  add rdi, 1
+  add r11, 1
+
+  mov rdi, r11
+  mov rsi, r12
   call get_dot
   mov rdi, rax
   call dead_or_alive
   add r10, rax
 
   ; upper right
-  add rdi, 1
+  add r11, 1
+
+  mov rdi, r11
+  mov rsi, r12
   call get_dot
   mov rdi, rax
   call dead_or_alive
@@ -70,14 +99,20 @@ test_cell:
   ;;;; MIDDLE
 
   ; upper right
-  add rsi, 1
+  add r12, 1
+
+  mov rdi, r11
+  mov rsi, r12
   call get_dot
   mov rdi, rax
   call dead_or_alive
   add r10, rax
 
   ; upper left
-  sub rdi, 2
+  sub r11, 2
+
+  mov rdi, r11
+  mov rsi, r12
   call get_dot
   mov rdi, rax
   call dead_or_alive
@@ -86,29 +121,41 @@ test_cell:
   ;;;; LOWER
 
   ; lower left
-  add rsi, 1
+  add r12, 1
+
+  mov rdi, r11
+  mov rsi, r12
   call get_dot
   mov rdi, rax
   call dead_or_alive
   add r10, rax
 
   ; lower middle
-  add rdi, 1
+  add r11, 1
+
+  mov rdi, r11
+  mov rsi, r12
   call get_dot
   mov rdi, rax
   call dead_or_alive
   add r10, rax
 
   ; lower right
-  add rdi, 1
+  add r11, 1
+
+  mov rdi, r11
+  mov rsi, r12
   call get_dot
   mov rdi, rax
   call dead_or_alive
   add r10, rax
 
   ; get initial
-  sub rdi, 1
-  sub rsi, 1
+  sub r11, 1
+  sub r12, 1
+
+  mov rdi, r11
+  mov rsi, r12
   call get_dot
   mov rdi, rax
   call dead_or_alive
