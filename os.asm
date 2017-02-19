@@ -15,23 +15,26 @@ main:
   mov rdi, 1
   call sleep
 
-  mov rdi, 4
+  mov rdi, 3
   mov rsi, 4
   call test_cell
 
-  ;mov rdx, "0x42"
-  ;cmp rax, 1
-  ;je is_res_alive
-  ;  mov rdx, "0x41"
-  ;is_res_alive:
+  int 0x3
 
-  ;mov rdi, 1
-  ;mov rsi, 1
-  ;mov rdx, rax
-  ;call draw_dot
+  mov rdx, "#"
+  cmp rax, 1
+  je is_res_alive
+    mov rdx, " "
+  is_res_alive:
 
-  ;mov rdi, 1
-  ;call sleep
+  mov rdi, 1
+  mov rsi, 1
+  call draw_dot
+
+  call refresh_screen
+
+  mov rdi, 1
+  call sleep
 
   call exit
 
@@ -44,7 +47,7 @@ dead_or_alive:
   mov rbx, rsp
 
   mov rax, 0
-  cmp rdi, "#"
+  cmp dil, "#"
   jne out
   mov rax, 1
   out:
