@@ -20,9 +20,6 @@ main:
   pop rbx
   ret
 
-; Une cellule morte possédant exactement trois voisines vivantes devient vivante (elle naît).
-; Une cellule vivante possédant deux ou trois voisines vivantes le reste, sinon elle meurt.
-
 dead_or_alive: ; lol
   push rbx
   mov rbx, rsp
@@ -105,6 +102,38 @@ test_cell:
   call dead_or_alive
   add r10, rax
 
+
+  ; get initial
+  sub rdi, 1
+  sub rsi, 1
+  call get_dot
+  mov rdi, rax
+  call dead_or_alive
+
+
+  ; Une cellule morte possédant exactement trois voisines vivantes devient vivante (elle naît).
+  ; Une cellule vivante possédant deux ou trois voisines vivantes le reste, sinon elle meurt.
+  cmp rax, 1
+  jeq: is_alive
+  is_dead:
+    mov rax, 0
+    cmp r10, 3
+    jeq set_alive
+    jmp end_test_cell:
+
+  is_alive:
+    mov rax, 0
+    cmp r10, 3
+    jeq set_alive
+    cmp r10, 2
+    jeq set_alive
+    jmp end_test_cell:
+
+    jmp end_test_cell:
+
+  set_alive:
+    mov rax, 1
+  end_test_cell:
   pop rbx
   ret
 
