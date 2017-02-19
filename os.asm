@@ -19,8 +19,6 @@ main:
   mov rsi, 4
   call test_cell
 
-  int 0x3
-
   mov rdx, "#"
   cmp rax, 1
   je is_res_alive
