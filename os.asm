@@ -20,7 +20,8 @@ main:
   pop rbx
   ret
 
-dead_or_alive: ; lol
+; test cell char 1 = alive 0 = dead
+dead_or_alive:
   push rbx
   mov rbx, rsp
 
@@ -33,6 +34,9 @@ dead_or_alive: ; lol
   pop rbx
   ret
 
+; rdi x
+; rsi y
+; return rax = next cell state
 test_cell:
   push rbx
   mov rbx, rsp
@@ -102,7 +106,6 @@ test_cell:
   call dead_or_alive
   add r10, rax
 
-
   ; get initial
   sub rdi, 1
   sub rsi, 1
@@ -110,8 +113,7 @@ test_cell:
   mov rdi, rax
   call dead_or_alive
 
-  ; Une cellule morte possédant exactement trois voisines vivantes devient vivante (elle naît).
-  ; Une cellule vivante possédant deux ou trois voisines vivantes le reste, sinon elle meurt.
+  ; test cell state
   cmp rax, 1
   je is_alive
   is_dead:
@@ -136,6 +138,7 @@ test_cell:
   pop rbx
   ret
 
+; create a test glider
 create_glider:
   push rbx
   mov rbx, rsp
