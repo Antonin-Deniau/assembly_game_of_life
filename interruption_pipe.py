@@ -13,6 +13,8 @@ def handle_intr(number):
     text = raw_input()
     rax = r2.cmd("aer rax")
     r2.cmd("w {} @ {}".format(text, rax))
+  elif number == 0xFF:
+    print("Emulation done.")
 
 handle_intr(int(sys.argv[1], 0))
 

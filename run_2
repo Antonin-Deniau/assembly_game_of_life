@@ -1,0 +1,49 @@
+#!/usr/bin/env python
+
+from __future__ import print_function
+from unicorn import *
+from unicorn.x86_const import *
+
+ADDRESS = 0x0
+
+def hook_intr(uc, intno, user_data):
+  if intno == 0x1:
+    rax = uc.reg_read(UC_X86_REG_RAX)
+
+    buf = ""
+    overflow = 0
+    overflow_limit = 1000
+    while True:
+      byte = uc.mem_read(rax + overflow, 1)
+      overflow += 1
+      if byte == "\x00":
+        print(buf)
+        break
+      elif overflow >= overflow_limit:
+        break
+      else:
+        buf += byte
+
+  elif intno == 0x2:
+    rax = uc.reg_read(UC_X86_REG_RAX)
+    text = raw_input()
+    uc.mem_write(rax, text)
+
+
+  elif intno == 0xFF:
+    uc.emu_stop()
+
+def test_i386(mode, code):
+  try:
+    mu = Uc(UC_ARCH_X86, mode)
+    mu.mem_map(ADDRESS, 2 * 1024 * 1024)
+    mu.mem_write(ADDRESS, code)
+    mu.hook_add(UC_HOOK_INTR, hook_intr)
+    mu.emu_start(ADDRESS, ADDRESS + len(code))
+    print(">>> Emulation done")
+  except UcError as e:
+    print("ERROR: %s" % e)
+
+with open("./os", "rb") as binary_file:
+  data = binary_file.read()
+  test_i386(UC_MODE_64, data)
