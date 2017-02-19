@@ -110,26 +110,25 @@ test_cell:
   mov rdi, rax
   call dead_or_alive
 
-
   ; Une cellule morte possédant exactement trois voisines vivantes devient vivante (elle naît).
   ; Une cellule vivante possédant deux ou trois voisines vivantes le reste, sinon elle meurt.
   cmp rax, 1
-  jeq: is_alive
+  je is_alive
   is_dead:
     mov rax, 0
     cmp r10, 3
-    jeq set_alive
-    jmp end_test_cell:
+    je set_alive
+    jmp end_test_cell
 
   is_alive:
     mov rax, 0
     cmp r10, 3
-    jeq set_alive
+    je set_alive
     cmp r10, 2
-    jeq set_alive
-    jmp end_test_cell:
+    je set_alive
+    jmp end_test_cell
 
-    jmp end_test_cell:
+    jmp end_test_cell
 
   set_alive:
     mov rax, 1
