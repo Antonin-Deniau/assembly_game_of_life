@@ -19,7 +19,7 @@ def draw_dots(matrix):
       s.addstr(h, w, dot)
 
 def draw_screen(uc):
-  offset = uc.reg_read(UC_X86_REG_RAX)
+  offset = uc.reg_read(UC_X86_REG_EDI)
   matrix = uc.mem_read(offset, width * height)
   draw_dots(matrix)
   s.refresh()
@@ -31,7 +31,7 @@ def hook_intr(uc, intno, user_data):
     draw_screen(uc)
 
   if intno == 0x2: # sleep
-    rax = uc.reg_read(UC_X86_REG_RAX)
+    rax = uc.reg_read(UC_X86_REG_EDI)
     time.sleep(rax)
 
   elif intno == 0xFF: #exit
