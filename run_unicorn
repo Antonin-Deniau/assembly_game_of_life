@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import curses, time
+import curses, time, os
 from unicorn import *
 from unicorn.x86_const import *
 
@@ -37,9 +37,9 @@ def hook_intr(uc, intno, user_data):
     time.sleep(rax)
 
   elif intno == 0x3: # debug
-    print("Stop\n")
-    r10 = uc.reg_read(UC_X86_REG_R10)
-    print(r10)
+    r12 = uc.reg_read(UC_X86_REG_R12)
+    edi = uc.reg_read(UC_X86_REG_EDI)
+    esi = uc.reg_read(UC_X86_REG_ESI)
 
   elif intno == 0xFF: #exit
     uc.emu_stop()

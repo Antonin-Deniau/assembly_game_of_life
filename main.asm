@@ -11,6 +11,10 @@ main:
 
   call screen_init
   call gol_create_glider
+  call int_refresh_screen
+
+  mov rdi, 1
+  call int_sleep
 
   call gol_do_iteration
   call gol_display_buffer
