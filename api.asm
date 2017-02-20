@@ -16,6 +16,36 @@ draw_dot:
 
 ; rdi x
 ; rsi y
+test_in_screen:
+  push rbx
+  mov rbx, rsp
+
+  mov rax, 0
+
+  ; test if x > 100
+	cmp rdi, 100
+	jg test_in_screen_end
+
+  ; test if x < 0
+	cmp rdi, 0
+	jl test_in_screen_end
+
+  ; test if y > 50
+	cmp rsi, 50
+	jg test_in_screen_end
+
+  ; test if y < 0
+	cmp rsi, 0
+	jl test_in_screen_end
+
+  mov rax, 1
+	test_in_screen_end:
+
+  pop rbx
+  ret
+
+; rdi x
+; rsi y
 get_dot:
   push rbx
   mov rbx, rsp

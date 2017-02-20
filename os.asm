@@ -15,22 +15,6 @@ main:
   mov rdi, 1
   call sleep
 
-  mov rdi, 3
-  mov rsi, 4
-  call test_cell
-
-  mov rdx, "#"
-  cmp rax, 1
-  je is_res_alive
-    mov rdx, " "
-  is_res_alive:
-
-  mov rdi, 1
-  mov rsi, 1
-  call draw_dot
-
-  call refresh_screen
-
   mov rdi, 1
   call sleep
 
@@ -38,6 +22,47 @@ main:
 
   pop rbx
   ret
+
+test_all_cells:
+  mov r10, 0 ; x
+  mov r11, 0 ; y
+  mov r12, screen + 5000 ; buffer offset
+	;   r13 scratch var ; dot offset
+	;   r14 scratch var ; dot char
+
+  ; ;----100-y----;
+  ; ;             ; 
+  ; 50 x          ;
+  ; ;             ; 
+  ; ;-------------;
+
+	loop_x:
+	  loop_y:
+			;; LOOP
+
+      mov rdi, r10
+      mov rsi, r11
+      call test_cell
+
+      mov r14, "#"
+      cmp rax, 1
+      je is_dot_alive
+        mov r14, " "
+      is_dot_alive:
+
+      mov r13, r10   ; offset = x
+			imul r13, 100  ; offset = offset * 100 
+			add r13, r11   ; offset = offset + y
+      mov byte [r12 + r13], r14
+
+			;; END
+	    inc r11
+		  cmp r11, 100
+		  jl loop_y
+		;; 
+		inc r10
+		cmp r10, 50
+		jl loop_x
 
 ; test cell char 1 = alive 0 = dead
 dead_or_alive:
