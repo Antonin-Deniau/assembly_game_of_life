@@ -64,6 +64,28 @@ test_all_cells:
 		cmp r10, 50
 		jl loop_x
 
+copy_buffer_to_screen:
+  push rbx
+  mov rbx, rsp
+
+	; r10 loop_counter
+	; r11 char buffer
+	; r12 buffer_offset
+	mov r12, screen
+	add r12, 5000
+
+  mov r10, 0
+  loop:
+	  mov r11, [r12 + r10]
+    mov byte [screen + r10], r11
+
+    inc r10
+    cmp r10, 5000
+    jle loop
+
+  pop rbx
+  ret
+
 ; test cell char 1 = alive 0 = dead
 dead_or_alive:
   push rbx
