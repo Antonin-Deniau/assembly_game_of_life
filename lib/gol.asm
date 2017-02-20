@@ -28,7 +28,7 @@ gol_do_iteration:
       mov r13, r10   ; offset = x
 			imul r13, 100  ; offset = offset * 100 
 			add r13, r11   ; offset = offset + y
-      mov [r12 + r13], r14
+      mov [r12 + r13], r14b
 
 			;; END
 	    inc r11
@@ -52,7 +52,7 @@ gol_display_buffer:
   mov r10, 0
   gdb_loop:
 	  mov r11, [r12 + r10]
-    mov [screen + r10], r11
+    mov [screen + r10], r11b
 
     inc r10
     cmp r10, 5000
@@ -156,9 +156,10 @@ gol_test_cell:
   pop rbx
   ret
 
-%macro gol_draw_cell 2 
+%macro gol_draw_cell 2
   mov rdi, %1
   mov rsi, %2
+  mov rdx, "#"
   call screen_set_dot
 %endmacro
 
