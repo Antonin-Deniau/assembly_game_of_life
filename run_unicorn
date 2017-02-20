@@ -15,7 +15,10 @@ def draw_dots(matrix):
   for w in range(0, width):
     for h in range(0, height):
       dot = chr(lines[h][w])
-      s.addstr(h, w, dot)
+      try:
+        s.addstr(h, w, dot)
+      except:
+        s.addstr(h, w, "?")
 
 def draw_screen(uc):
   offset = uc.reg_read(UC_X86_REG_RAX)
@@ -35,9 +38,8 @@ def hook_intr(uc, intno, user_data):
 
   elif intno == 0x3: # debug
     print("Stop\n")
-    rbp = uc.reg_read(UC_X86_REG_RBP)
-    rsp = uc.reg_read(UC_X86_REG_RSP)
-    print(rbp, rsp)
+    r10 = uc.reg_read(UC_X86_REG_R10)
+    print(r10)
 
   elif intno == 0xFF: #exit
     uc.emu_stop()

@@ -27,17 +27,17 @@ gol_do_iteration:
 
       ;; [buffer + pos] = char
 			mov r11, screen + 5000
-      mov [r11 + r10], r12
+      mov [r11 + r10], r12b
 
 			;; while y <= 100
 	    inc dword [rbp-8]
 		  cmp dword [rbp-8], 100
-		  jl gdi_loop_y
+		  jle gdi_loop_y
 
 	  ;; while x <= 50
 		inc dword [rbp-4]
 		cmp dword [rbp-4], 50
-		jl gdi_loop_x
+		jle gdi_loop_x
 
   pop rbx
   ret
@@ -46,20 +46,29 @@ gol_display_buffer:
   push rbx
   mov rbx, rsp
 
-	; r10 loop_counter
-	; r11 char buffer
-	; r12 buffer_offset
-	mov r12, screen
-	add r12, 5000
+	mov dword [rbp-4], 0 ; x
+	mov dword [rbp-8], 0 ; y
 
-  mov r10, 0
-  gdb_loop:
-	  mov r11, [r12 + r10]
-    mov [screen + r10], r11b
+	gdb_loop_x:
+	  gdb_loop_y:
 
-    inc r10
-    cmp r10, 5000
-    jle gdb_loop
+      mov r10, 0
+      mov r10d, [rbp-4]
+			imul r10d, 100
+			add r10d, [rbp-8]
+
+	    mov r11, [r12 + r10]     ; char = [buffer + offset]
+      mov [screen + r10], r11b ; [screen + offset] =char
+
+			;; while y <= 100
+	    inc dword [rbp-8]
+		  cmp dword [rbp-8], 100
+		  jle gdb_loop_y
+
+	  ;; while x <= 50
+		inc dword [rbp-4]
+		cmp dword [rbp-4], 50
+		jle gdb_loop_x
 
   pop rbx
   ret
