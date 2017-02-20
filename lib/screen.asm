@@ -4,7 +4,7 @@ screen_init:
 
   mov r12, 0
   loop:
-    mov byte [screen + r12], 0x20
+    mov byte [screen + r12], " "
 
     inc r12
     cmp r12, 5000

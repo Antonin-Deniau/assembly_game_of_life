@@ -3,7 +3,7 @@ int_refresh_screen:
   mov rbx, rsp
 
   mov rax, screen
-  int 0x1
+  int 1
 
   pop rbx
   ret
@@ -13,8 +13,8 @@ int_sleep:
   push rbx
   mov rbx, rsp
 
-  mov rax, edi
-  int 0x2
+  mov eax, edi
+  int 2
 
   pop rbx
   ret
