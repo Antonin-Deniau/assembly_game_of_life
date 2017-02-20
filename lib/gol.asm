@@ -1,43 +1,48 @@
 gol_do_iteration:
-  mov r10, 0 ; x
-  mov r11, 0 ; y
-  mov r12, screen + 5000 ; buffer offset
-	;   r13 scratch var ; dot offset
-	;   r14 scratch var ; dot char
+  push rbx
+  mov rbx, rsp
 
-  ; ;----100-y----;
-  ; ;             ; 
-  ; 50 x          ;
-  ; ;             ; 
-  ; ;-------------;
+	mov dword [ebp-4], 0 ; x
+	mov dword [ebp-8], 0 ; y
+	mov dword [ebp-12], screen + 5000 ; buffer offset
+	mov dword [ebp-16], 0 ; dot offset
+	mov dword [ebp-20], 0 ; dot char
 
 	gdi_loop_x:
 	  gdi_loop_y:
-			;; LOOP
-
-      mov rdi, r10
-      mov rsi, r11
+			;; gol_test_cell x, y
+      mov rdi, [ebp-4]
+      mov rsi, [ebp-8]
       call gol_test_cell
 
-      mov r14, "#"
+      ;; r10 = (x * 100) + y
+      mov r10, [ebp-4]
+			imul r10, 100
+			add r10, [ebp-8]
+
+      ;; is_cell_alive ? "#" : " "
+      mov r12, "#"
       cmp rax, 1
       je gdi_is_cell_alive
-        mov r14, " "
+        mov r12, " "
       gdi_is_cell_alive:
 
-      mov r13, r10   ; offset = x
-			imul r13, 100  ; offset = offset * 100 
-			add r13, r11   ; offset = offset + y
-      mov [r12 + r13], r14b
+      ;; [buffer + pos] = char
+			mov r11, [ebp-12]
+      mov [r11 + r10], r12
 
-			;; END
-	    inc r11
-		  cmp r11, 100
+			;; while y <= 100
+	    inc [ebp-8]
+		  cmp [ebp-8], 100
 		  jl gdi_loop_y
-		;; 
-		inc r10
-		cmp r10, 50
+
+	  ;; while x <= 50
+		inc [ebp-4]
+		cmp [ebp-4], 50
 		jl gdi_loop_x
+
+  pop rbx
+  ret
 
 gol_display_buffer:
   push rbx
@@ -85,8 +90,6 @@ gol_test_cell:
   mov r10, 0 ; alive_count
   mov r11, rdi ; x
   mov r12, rsi ; y
-
-  ;;;; UPPER
 
   %macro gtc_test_dot 0
     mov rdi, r11

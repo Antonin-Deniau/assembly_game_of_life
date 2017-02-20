@@ -13,7 +13,7 @@ int_sleep:
   push rbx
   mov rbx, rsp
 
-  mov eax, edi
+  mov rax, edi
   int 0x2
 
   pop rbx
