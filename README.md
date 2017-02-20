@@ -1,2 +1,4 @@
-# radare_os
-An test os built on top of: x86, esil, python, and radare
+# Assembly game of life
+
+This is a game of life application written with unicorn emulator and assembly.
+I will maybe do a radare2 esil version of it.
