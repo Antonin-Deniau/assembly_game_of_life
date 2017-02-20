@@ -52,6 +52,6 @@ def run(mode, code):
   except UcError as e:
     print("ERROR: %s" % e)
 
-with open("./os", "rb") as binary_file:
+with open("./main", "rb") as binary_file:
   data = binary_file.read()
   run(UC_MODE_64, data)

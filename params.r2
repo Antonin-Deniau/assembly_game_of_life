@@ -1,5 +1,5 @@
 #conf binaire
-o os~prevent_display
+o main~prevent_display
 e asm.arch = x86
 e asm.bits = 64
 e asm.esil = true
