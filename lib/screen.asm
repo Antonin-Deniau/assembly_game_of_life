@@ -19,11 +19,9 @@ screen_get_dot:
   push rbx
   mov rbx, rsp
 
-  mov rax, rdi
-
-  imul rax, 100
-  add rax, rsi
-  mov rax, [screen + rax]
+  imul edi, 100
+  add esi, esi
+  mov rax, [screen + esi]
 
   pop rbx
   ret

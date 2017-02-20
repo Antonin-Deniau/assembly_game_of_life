@@ -8,15 +8,15 @@ gol_do_iteration:
 	gdi_loop_x:
 	  gdi_loop_y:
 			;; gol_test_cell x, y
-      int 3
-      mov rdi, [rbp-4]
-      mov rsi, [rbp-8]
+      mov edi, [rbp-4]
+      mov esi, [rbp-8]
       call gol_test_cell
 
       ;; r10 = (x * 100) + y
-      mov r10, [rbp-4]
-			imul r10, 100
-			add r10, [rbp-8]
+      mov r10, 0
+      mov r10d, [rbp-4]
+			imul r10d, 100
+			add r10d, [rbp-8]
 
       ;; is_cell_alive ? "#" : " "
       mov r12, "#"
@@ -90,8 +90,8 @@ gol_test_cell:
 	mov dword [rbp-12], 0
 
   %macro gtc_test_dot 0
-    mov rdi, [rbp-4]
-    mov rsi, [rbp-8]
+    mov edi, [rbp-4]
+    mov esi, [rbp-8]
     call screen_get_dot
     mov rdi, rax
     call gol_dead_or_alive
@@ -130,8 +130,8 @@ gol_test_cell:
   sub dword [rbp-4], 1
   sub dword [rbp-8], 1
 
-  mov rdi, [rbp-4]
-  mov rsi, [rbp-8]
+  mov edi, [rbp-4]
+  mov esi, [rbp-8]
   call screen_get_dot
   mov rdi, rax
   call gol_dead_or_alive
