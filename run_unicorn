@@ -43,12 +43,13 @@ def hook_intr(uc, intno, user_data):
     time.sleep(rax)
 
   elif intno == 0x3: # debug
+    debug("debug")
     rdi = uc.reg_read(UC_X86_REG_RDI)
     rsi = uc.reg_read(UC_X86_REG_RSI)
     rsp = uc.reg_read(UC_X86_REG_RSP)
     rbp = uc.reg_read(UC_X86_REG_RBP)
     rax = uc.reg_read(UC_X86_REG_RAX)
-    debug("rdi: {:02X>12} rsi: {}  rsp: {} rbp: {} rax: {}".format(rdi, rsi, rsp, rbp, rax))
+    debug("rdi: 0x{:0>10X} rsi: 0x{:0>10X}  rsp: 0x{:0>10X} rbp: 0x{:0>10X} rax: 0x{:0>10}".format(rdi, rsi, rsp, rbp, rax))
 
   elif intno == 0xFF: # exit
     debug("exit")
