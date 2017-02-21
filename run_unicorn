@@ -5,10 +5,15 @@ from unicorn import *
 from unicorn.x86_const import *
 
 s = curses.initscr()
-pipe = open("./debugger", "w")
+log = open("./debugger.log", "w")
 
 width = 100
 height = 50
+ADDRESS = 0x0
+
+def debug(msg):
+  log.write(msg + "\n")
+  log.flush()
 
 def draw_dots(matrix):
   lines = [matrix[i:i + width] for i in range(0, len(matrix), width)]
@@ -27,15 +32,13 @@ def draw_screen(uc):
   draw_dots(matrix)
   s.refresh()
 
-ADDRESS = 0x0
-
 def hook_intr(uc, intno, user_data):
   if intno == 0x1: # refresh
-    pipe.write("draw\n")
+    debug("draw")
     draw_screen(uc)
 
   elif intno == 0x2: # sleep
-    pipe.write("sleep\n")
+    debug("sleep")
     rax = uc.reg_read(UC_X86_REG_RAX)
     time.sleep(rax)
 
@@ -45,9 +48,10 @@ def hook_intr(uc, intno, user_data):
     rsp = uc.reg_read(UC_X86_REG_RSP)
     rbp = uc.reg_read(UC_X86_REG_RBP)
     rax = uc.reg_read(UC_X86_REG_RAX)
-    pipe.write("rdi: {:02X>12} rsi: {}  rsp: {} rbp: {} rax: {}\n".format(rdi, rsi, rsp, rbp, rax))
+    debug("rdi: {:02X>12} rsi: {}  rsp: {} rbp: {} rax: {}".format(rdi, rsi, rsp, rbp, rax))
 
   elif intno == 0xFF: # exit
+    debug("exit")
     uc.emu_stop()
 
 def run(mode, code):
@@ -65,3 +69,4 @@ def run(mode, code):
 with open("./main", "rb") as binary_file:
   data = binary_file.read()
   run(UC_MODE_64, data)
+  log.close()
