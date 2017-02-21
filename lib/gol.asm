@@ -1,6 +1,6 @@
 gol_do_iteration:
-  push rbx
-  mov rbx, rsp
+	push rbp
+	mov  rbp, rsp
 
   mov dword [rbp-4], 0 ; x
   mov dword [rbp-8], 0 ; y
@@ -41,12 +41,12 @@ gol_do_iteration:
     cmp dword [rbp-4], 50
     jle gdi_loop_x
 
-  pop rbx
+  pop rbp
   ret
 
 gol_display_buffer:
-  push rbx
-  mov rbx, rsp
+	push rbp
+	mov  rbp, rsp
 
   mov dword [rbp-4], 0 ; offset
 
@@ -61,14 +61,13 @@ gol_display_buffer:
     cmp dword [rbp-4], 5000
     jle gdb_loop
 
-
-  pop rbx
+  pop rbp
   ret
 
 ; test cell char 1 = alive 0 = dead
 gol_dead_or_alive:
-  push rbx
-  mov rbx, rsp
+  push rbp
+  mov rbp, rsp
 
   mov rax, 0
   cmp dil, "#"
@@ -76,15 +75,15 @@ gol_dead_or_alive:
     mov rax, 1
   gdor_out:
 
-  pop rbx
+  pop rbp
   ret
 
 ; rdi x
 ; rsi y
 ; return rax = next cell state
 gol_test_cell:
-  push rbx
-  mov rbx, rsp
+  push rbp
+  mov rbp, rsp
 
   mov dword [rbp-4], edi ; x r11
   mov dword [rbp-8], esi ; y r12
@@ -168,7 +167,7 @@ gol_test_cell:
     mov rax, 1
   gtc_end:
 
-  pop rbx
+  pop rbp
   ret
 
 %macro gol_draw_cell 2
@@ -180,8 +179,8 @@ gol_test_cell:
 
 ; create a test glider
 gol_create_glider:
-  push rbx
-  mov rbx, rsp
+  push rbp
+  mov rbp, rsp
 
   gol_draw_cell 2, 4
   gol_draw_cell 3, 5
@@ -190,6 +189,6 @@ gol_create_glider:
   gol_draw_cell 5, 4
   gol_draw_cell 5, 5
 
-  pop rbx
+  pop rbp
   ret
 

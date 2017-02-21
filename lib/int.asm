@@ -1,35 +1,30 @@
 int_refresh_screen:
-  push rbx
-  mov rbx, rsp
+  push rbp
+  mov rbp, rsp
 
   mov rax, screen
   int 1
 
-  pop rbx
+  pop rbp
   ret
 
 ; edi lenght
 int_sleep:
-  push rbx
-  mov rbx, rsp
+  push rbp
+  mov rbp, rsp
 
   mov eax, edi
   int 2
 
-  pop rbx
+  pop rbp
   ret
 
 int_exit:
-  push rbx
-  mov rbx, rsp
+  push rbp
+  mov rbp, rsp
 
   int 0xFF
 
-  pop rbx
+  pop rbp
   ret
 
-%macro debug_params 0
-	mov edi, dword [rbp-4]
-	mov esi, dword [rbp-8]
-	int 3
-%endmacro

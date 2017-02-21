@@ -1,6 +1,6 @@
 screen_init:
-  push rbx
-  mov rbx, rsp
+  push rbp
+  mov rbp, rsp
 
   mov r12, 0
   loop:
@@ -10,14 +10,14 @@ screen_init:
     cmp r12, 5000
     jle loop
 
-  pop rbx
+  pop rbp
   ret
 
 ; rdi x
 ; rsi y
 screen_get_dot:
-  push rbx
-  mov rbx, rsp
+  push rbp
+  mov rbp, rsp
 
   mov dword [rbp-4], edi ; x
   mov dword [rbp-8], esi ; y
@@ -28,15 +28,15 @@ screen_get_dot:
   add r10d, dword [ebp-8]
   mov al, byte [screen + r10d]
 
-  pop rbx
+  pop rbp
   ret
 
 ; rdi x
 ; rsi y
 ; rdx char
 screen_set_dot:
-  push rbx
-  mov rbx, rsp
+  push rbp
+  mov rbp, rsp
 
   mov rax, rdi
 
@@ -44,14 +44,14 @@ screen_set_dot:
   add rax, rsi
   mov [screen + rax], dl
 
-  pop rbx
+  pop rbp
   ret
 
 ; rdi x
 ; rsi y
 screen_test_in:
-  push rbx
-  mov rbx, rsp
+  push rbp
+  mov rbp, rsp
 
   mov rax, 0
 
@@ -74,5 +74,5 @@ screen_test_in:
   mov rax, 1
 	sti_end:
 
-  pop rbx
+  pop rbp
   ret

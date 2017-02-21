@@ -4,8 +4,8 @@ import curses, time, os
 from unicorn import *
 from unicorn.x86_const import *
 
-dump = ""
 s = curses.initscr()
+pipe = open("./debugger", "w")
 
 width = 100
 height = 50
@@ -30,15 +30,24 @@ def draw_screen(uc):
 ADDRESS = 0x0
 
 def hook_intr(uc, intno, user_data):
-  global dump
   if intno == 0x1: # refresh
+    pipe.write("draw\n")
     draw_screen(uc)
 
-  if intno == 0x2: # sleep
+  elif intno == 0x2: # sleep
+    pipe.write("sleep\n")
     rax = uc.reg_read(UC_X86_REG_RAX)
     time.sleep(rax)
 
-  elif intno == 0xFF: #exit
+  elif intno == 0x3: # debug
+    rdi = uc.reg_read(UC_X86_REG_RDI)
+    rsi = uc.reg_read(UC_X86_REG_RSI)
+    rsp = uc.reg_read(UC_X86_REG_RSP)
+    rbp = uc.reg_read(UC_X86_REG_RBP)
+    rax = uc.reg_read(UC_X86_REG_RAX)
+    pipe.write("rdi: {:02X>12} rsi: {}  rsp: {} rbp: {} rax: {}\n".format(rdi, rsi, rsp, rbp, rax))
+
+  elif intno == 0xFF: # exit
     uc.emu_stop()
 
 def run(mode, code):

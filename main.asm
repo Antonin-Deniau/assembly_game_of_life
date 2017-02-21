@@ -6,13 +6,15 @@ jmp main
 %include "./lib/gol.asm"
 
 main:
-  push rbx
-  mov rbx, rsp
+  push rbp
+  mov rbp, rsp
 
   mov dword [rbp-4], 0 ; loop
 
   call screen_init
   call gol_create_glider
+
+	int 3
 
   main_loop:
 		call int_refresh_screen
@@ -21,11 +23,12 @@ main:
 		call int_sleep
 
 		call gol_do_iteration
+
 		call gol_display_buffer
 
 		inc dword [rbp-4]
 		cmp dword [rbp-4], 20
-		jg main_loop
+		jl main_loop
 
 
   mov rdi, 1
@@ -33,7 +36,7 @@ main:
 
   call int_exit
 
-  pop rbx
+  pop rbp
   ret
 
 data:
