@@ -8,15 +8,9 @@ gol_do_iteration:
   gdi_loop_x:
     gdi_loop_y:
       ;; gol_test_cell x, y
-      mov edi, [rbp-4]
-      mov esi, [rbp-8]
+      mov edi, dword [rbp-4]
+      mov esi, dword [rbp-8]
       call gol_test_cell
-
-      ;; r10 = (x * 100) + y
-      mov r10, 0
-      mov r10d, [rbp-4]
-      imul r10d, 100
-      add r10d, [rbp-8]
 
       ;; is_cell_alive ? "#" : " "
       mov r12, "#"
@@ -25,8 +19,11 @@ gol_do_iteration:
         mov r12, " "
       gdi_is_cell_alive:
 
-      mov edi, [rbp-4]
-      mov esi, [rbp-8]
+      ;; r10 = (x * 100) + y
+      mov r10, 0
+      mov r10d, [rbp-4]
+      imul r10d, 100
+      add r10d, [rbp-8]
 
       ;; [buffer + pos] = char
       mov r11, screen + 5000
@@ -57,7 +54,7 @@ gol_display_buffer:
     mov r10, screen + 5000  ; buffer_addr
     mov r11d, dword [rbp-4] ; offset
 
-    mov r12b, byte [r10 + r11]          ; char = [buffer_addr + offset]
+    mov r12b, byte [r10 + r11]    ; char = [buffer_addr + offset]
     mov byte [screen + r11], r12b ; [screen + offset] = char
 
     inc dword [rbp-4]
@@ -92,50 +89,60 @@ gol_test_cell:
   mov dword [rbp-4], edi ; x r11
   mov dword [rbp-8], esi ; y r12
   mov dword [rbp-12], 0
-
-  %macro gtc_test_dot 0
-    mov edi, [rbp-4]
-    mov esi, [rbp-8]
+  %macro gtc_test_dot 1
+    ;; Manage walls
+    ; mov edi, dword [rbp-4]
+    ; mov esi, dword [rbp-8]
+		; call screen_test_in
+		; cmp rax, 1
+		; jne gtc_macro_end_%1
+    ; add [rbp-12], rax
+		; jmp gtc_macro_end_%1
+    mov edi, dword [rbp-4]
+    mov esi, dword [rbp-8]
+    ;;  Test if dead or alive
     call screen_get_dot
     mov rdi, rax
     call gol_dead_or_alive
-    add dword [rbp-12], eax
+    add [rbp-12], rax
+		; gtc_macro_end_%1:
   %endmacro
 
+  ;; WORK AS EXPECTED
   ; upper left
   sub dword [rbp-4], 1
   sub dword [rbp-8], 1
-  gtc_test_dot
+  gtc_test_dot ul
   ; upper middle
   add dword [rbp-4], 1
-  gtc_test_dot
+  gtc_test_dot um
   ; upper right
   add dword [rbp-4], 1
-  gtc_test_dot
+  gtc_test_dot ur
 
   ; middle right
   add dword [rbp-8], 1
-  gtc_test_dot
+  gtc_test_dot mr
   ; middle left
   sub dword [rbp-4], 2
-  gtc_test_dot
+  gtc_test_dot ml
 
   ; lower left
   add dword [rbp-8], 1
-  gtc_test_dot
+  gtc_test_dot ll
   ; lower middle
   add dword [rbp-4], 1
-  gtc_test_dot
+  gtc_test_dot lm
   ; lower right
   add dword [rbp-4], 1
-  gtc_test_dot
+  gtc_test_dot lr
 
   ; get initial
   sub dword [rbp-4], 1
   sub dword [rbp-8], 1
 
-  mov edi, [rbp-4]
-  mov esi, [rbp-8]
+  mov edi, dword [rbp-4]
+  mov esi, dword [rbp-8]
   call screen_get_dot
   mov rdi, rax
   call gol_dead_or_alive
@@ -160,6 +167,7 @@ gol_test_cell:
   gtc_set_alive:
     mov rax, 1
   gtc_end:
+
   pop rbx
   ret
 

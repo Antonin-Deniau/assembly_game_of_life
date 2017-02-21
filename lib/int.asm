@@ -27,3 +27,9 @@ int_exit:
 
   pop rbx
   ret
+
+%macro debug_params 0
+	mov edi, dword [rbp-4]
+	mov esi, dword [rbp-8]
+	int 3
+%endmacro

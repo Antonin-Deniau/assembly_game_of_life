@@ -4,6 +4,7 @@ import curses, time, os
 from unicorn import *
 from unicorn.x86_const import *
 
+dump = ""
 s = curses.initscr()
 
 width = 100
@@ -29,18 +30,13 @@ def draw_screen(uc):
 ADDRESS = 0x0
 
 def hook_intr(uc, intno, user_data):
+  global dump
   if intno == 0x1: # refresh
     draw_screen(uc)
 
   if intno == 0x2: # sleep
     rax = uc.reg_read(UC_X86_REG_RAX)
     time.sleep(rax)
-
-  elif intno == 0x3: # debug
-    r12 = uc.reg_read(UC_X86_REG_R12)
-    edi = uc.reg_read(UC_X86_REG_EDI)
-    esi = uc.reg_read(UC_X86_REG_ESI)
-    print(r12, edi, esi)
 
   elif intno == 0xFF: #exit
     uc.emu_stop()
