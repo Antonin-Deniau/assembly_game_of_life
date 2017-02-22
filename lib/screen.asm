@@ -19,14 +19,14 @@ screen_get_dot:
   push rbp
   mov rbp, rsp
 
-  mov dword [rbp-4], edi ; x
-  mov dword [rbp-8], esi ; y
+  mov qword [rbp-8], rdi ; x
+  mov qword [rbp-16], rsi ; y
 
 	mov r10, 0
-  mov r10d, dword [ebp-4]
+  mov r10, qword [ebp-8]
   imul r10, 100
-  add r10d, dword [ebp-8]
-  mov al, byte [screen + r10d]
+  add r10, qword [ebp-16]
+  mov al, byte [screen + r10]
 
   pop rbp
   ret

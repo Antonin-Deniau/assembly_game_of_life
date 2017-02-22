@@ -50,6 +50,12 @@ def hook_intr(uc, intno, user_data):
     rbp = uc.reg_read(UC_X86_REG_RBP)
     rax = uc.reg_read(UC_X86_REG_RAX)
     debug("rdi: 0x{:0>10X} rsi: 0x{:0>10X}  rsp: 0x{:0>10X} rbp: 0x{:0>10X} rax: 0x{:0>10}".format(rdi, rsi, rsp, rbp, rax))
+    r10 = uc.reg_read(UC_X86_REG_R10)
+    r11 = uc.reg_read(UC_X86_REG_R11)
+    r12 = uc.reg_read(UC_X86_REG_R12)
+    r13 = uc.reg_read(UC_X86_REG_R13)
+    r14 = uc.reg_read(UC_X86_REG_R14)
+    debug("r10: 0x{:0>10X} r11: 0x{:0>10X}  r12: 0x{:0>10X} r13: 0x{:0>10X} r14: 0x{:0>10}".format(r10, r11, r12, r13, r14))
 
   elif intno == 0xFF: # exit
     debug("exit")
@@ -69,5 +75,6 @@ def run(mode, code):
 
 with open("./main", "rb") as binary_file:
   data = binary_file.read()
+  debug("\n\n********************** BEGIN DEBUGGER SESSION *************************")
   run(UC_MODE_64, data)
   log.close()

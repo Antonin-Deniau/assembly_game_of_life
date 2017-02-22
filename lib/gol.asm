@@ -2,14 +2,14 @@ gol_do_iteration:
 	push rbp
 	mov  rbp, rsp
 
-  mov dword [rbp-4], 0 ; x
-  mov dword [rbp-8], 0 ; y
+  mov qword [rbp-8], 0 ; x
+  mov qword [rbp-16], 0 ; y
 
   gdi_loop_x:
     gdi_loop_y:
       ;; gol_test_cell x, y
-      mov edi, dword [rbp-4]
-      mov esi, dword [rbp-8]
+      mov rdi, qword [rbp-8]
+      mov rsi, qword [rbp-16]
       call gol_test_cell
 
       ;; is_cell_alive ? "#" : " "
@@ -21,25 +21,26 @@ gol_do_iteration:
 
       ;; r10 = (x * 100) + y
       mov r10, 0
-      mov r10d, [rbp-4]
-      imul r10d, 100
-      add r10d, [rbp-8]
+      mov r10, qword [rbp-8]
+      imul r10, 100
+      add r10, qword [rbp-16]
 
       ;; [buffer + pos] = char
       mov r11, screen + 5000
       mov [r11 + r10], r12b
 
       ;; while y <= 100
-      inc dword [rbp-8]
-      cmp dword [rbp-8], 100
+      inc qword [rbp-16]
+      cmp qword [rbp-16], 100
       jle gdi_loop_y
 
-    mov dword [rbp-8], 0
+    mov qword [rbp-16], 0
 
     ;; while x <= 50
-    inc dword [rbp-4]
-    cmp dword [rbp-4], 50
+    inc qword [rbp-8]
+    cmp qword [rbp-8], 50
     jle gdi_loop_x
+
 
   pop rbp
   ret
@@ -48,17 +49,18 @@ gol_display_buffer:
 	push rbp
 	mov  rbp, rsp
 
-  mov dword [rbp-4], 0 ; offset
+  mov qword [rbp-8], 0 ; offset
 
   gdb_loop:
     mov r10, screen + 5000  ; buffer_addr
-    mov r11d, dword [rbp-4] ; offset
+    mov r11, [rbp-8] ; offset
 
     mov r12b, byte [r10 + r11]    ; char = [buffer_addr + offset]
     mov byte [screen + r11], r12b ; [screen + offset] = char
 
-    inc dword [rbp-4]
-    cmp dword [rbp-4], 5000
+		inc qword [rbp-8]
+    mov rax, 6
+    cmp qword [rbp-8], 5000
     jle gdb_loop
 
   pop rbp
@@ -85,63 +87,71 @@ gol_test_cell:
   push rbp
   mov rbp, rsp
 
-  mov dword [rbp-4], edi ; x r11
-  mov dword [rbp-8], esi ; y r12
-  mov dword [rbp-12], 0
+  mov qword [rbp-8], rdi ; x r11
+  mov qword [rbp-16], rsi ; y r12
+  mov qword [rbp-32], 0
+
   %macro gtc_test_dot 1
     ;; Manage walls
-    ; mov edi, dword [rbp-4]
-    ; mov esi, dword [rbp-8]
-		; call screen_test_in
-		; cmp rax, 1
-		; jne gtc_macro_end_%1
-    ; add [rbp-12], rax
-		; jmp gtc_macro_end_%1
-    mov edi, dword [rbp-4]
-    mov esi, dword [rbp-8]
+    mov rdi, qword [rbp-8]
+    mov rsi, qword [rbp-16]
+		int 3
+		call screen_test_in
+
+		cmp rax, 1
+		jne gtc_macro_end_%1
+			add [rbp-32], rax
+		jmp gtc_macro_end_%1
+
     ;;  Test if dead or alive
+    mov rdi, [rbp-8]
+    mov rsi, [rbp-16]
     call screen_get_dot
+
     mov rdi, rax
     call gol_dead_or_alive
-    add [rbp-12], rax
-		; gtc_macro_end_%1:
+    add [rbp-32], rax
+
+		gtc_macro_end_%1:
   %endmacro
 
   ;; WORK AS EXPECTED
   ; upper left
-  sub dword [rbp-4], 1
-  sub dword [rbp-8], 1
+	int 3
+  sub qword [rbp-8], 1
+  sub qword [rbp-16], 1
+
   gtc_test_dot ul
   ; upper middle
-  add dword [rbp-4], 1
+  add qword [rbp-8], 1
   gtc_test_dot um
   ; upper right
-  add dword [rbp-4], 1
+  add qword [rbp-16], 1
   gtc_test_dot ur
 
   ; middle right
-  add dword [rbp-8], 1
+  add qword [rbp-16], 1
   gtc_test_dot mr
   ; middle left
-  sub dword [rbp-4], 2
+  sub qword [rbp-8], 2
   gtc_test_dot ml
 
   ; lower left
-  add dword [rbp-8], 1
+  add qword [rbp-16], 1
   gtc_test_dot ll
   ; lower middle
-  add dword [rbp-4], 1
+  add qword [rbp-8], 1
   gtc_test_dot lm
   ; lower right
-  add dword [rbp-4], 1
+  add qword [rbp-8], 1
   gtc_test_dot lr
 
   ; get initial
-  sub dword [rbp-4], 1
-  sub dword [rbp-8], 1
+  sub qword [rbp-8], 1
+  sub qword [rbp-16], 1
 
-  mov edi, dword [rbp-4]
-  mov esi, dword [rbp-8]
+  mov rdi, qword [rbp-8]
+  mov rsi, qword [rbp-16]
   call screen_get_dot
   mov rdi, rax
   call gol_dead_or_alive
@@ -151,15 +161,15 @@ gol_test_cell:
   je gtc_is_alive
   gtc_is_dead:
     mov rax, 0
-    cmp dword [rbp-12], 3
+    cmp qword [rbp-32], 3
     je gtc_set_alive
     jmp gtc_end
 
   gtc_is_alive:
     mov rax, 0
-    cmp dword [rbp-12], 3
+    cmp qword [rbp-32], 3
     je gtc_set_alive
-    cmp dword [rbp-12], 2
+    cmp qword [rbp-32], 2
     je gtc_set_alive
     jmp gtc_end
 
