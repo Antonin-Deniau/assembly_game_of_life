@@ -93,15 +93,15 @@ gol_test_cell:
 
   %macro gtc_test_dot 1
     ;; Manage walls
-    mov rdi, qword [rbp-8]
-    mov rsi, qword [rbp-16]
+    ;mov rdi, qword [rbp-8]
+    ;mov rsi, qword [rbp-16]
 
-		call screen_test_in
+		;call screen_test_in
 
-		cmp rax, 1
-		jne gtc_macro_end_%1
-			add [rbp-24], rax
-		jmp gtc_macro_end_%1
+		;cmp rax, 1
+		;jne gtc_macro_end_%1
+	  ;add [rbp-24], rax
+	  ;jmp gtc_macro_end_%1
 
     ;;  Test if dead or alive
     mov rdi, [rbp-8]
@@ -112,36 +112,35 @@ gol_test_cell:
     call gol_dead_or_alive
     add [rbp-24], rax
 
-		gtc_macro_end_%1:
+		;gtc_macro_end_%1:
   %endmacro
 
   ; upper left
-  sub qword [rbp-8], 1
-  sub qword [rbp-16], 1
-
+  sub qword [rbp-16], 1 ; y = -1
+  sub qword [rbp-8], 1  ; x = -1
   gtc_test_dot ul
   ; upper middle
-  add qword [rbp-8], 1
+  add qword [rbp-8], 1  ; x = 0
   gtc_test_dot um
   ; upper right
-  add qword [rbp-16], 1
+  add qword [rbp-8], 1  ; x = 1
   gtc_test_dot ur
 
   ; middle right
-  add qword [rbp-16], 1
+  add qword [rbp-16], 1  ; y = 0 
   gtc_test_dot mr
   ; middle left
-  sub qword [rbp-8], 2
-  gtc_test_dot ml
+  sub qword [rbp-8], 2   ; x = -1
+	gtc_test_dot ml
 
   ; lower left
-  add qword [rbp-16], 1
+  add qword [rbp-16], 1  ; y = 1
   gtc_test_dot ll
   ; lower middle
-  add qword [rbp-8], 1
+  add qword [rbp-8], 1   ; x = 0
   gtc_test_dot lm
   ; lower right
-  add qword [rbp-8], 1
+  add qword [rbp-8], 1   ; x = 1
   gtc_test_dot lr
 
   ; get initial
