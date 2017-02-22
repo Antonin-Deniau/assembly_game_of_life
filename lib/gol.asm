@@ -1,6 +1,7 @@
 gol_do_iteration:
 	push rbp
-	mov  rbp, rsp
+	mov rbp, rsp
+	sub rsp, 24
 
   mov qword [rbp-8], 0 ; x
   mov qword [rbp-16], 0 ; y
@@ -40,12 +41,13 @@ gol_do_iteration:
     cmp qword [rbp-8], 100
     jle gdi_loop_x
 
-  pop rbp
+  leave
   ret
 
 gol_display_buffer:
 	push rbp
 	mov  rbp, rsp
+	sub rsp, 16
 
   mov qword [rbp-8], 0 ; offset
 
@@ -60,7 +62,7 @@ gol_display_buffer:
     cmp qword [rbp-8], 5000
     jle gdb_loop
 
-  pop rbp
+  leave
   ret
 
 ; test cell char 1 = alive 0 = dead
@@ -83,6 +85,7 @@ gol_dead_or_alive:
 gol_test_cell:
   push rbp
   mov rbp, rsp
+	sub rsp, 30
 
   mov qword [rbp-8], rdi  ; x
   mov qword [rbp-16], rsi ; y
@@ -93,7 +96,6 @@ gol_test_cell:
     mov rdi, qword [rbp-8]
     mov rsi, qword [rbp-16]
 
-	  int 3
 		call screen_test_in
 
 		cmp rax, 1
@@ -146,8 +148,6 @@ gol_test_cell:
   sub qword [rbp-8], 1
   sub qword [rbp-16], 1
 
-	int 3
-
   mov rdi, qword [rbp-8]
   mov rsi, qword [rbp-16]
   call screen_get_dot
@@ -175,7 +175,7 @@ gol_test_cell:
     mov rax, 1
   gtc_end:
 
-  pop rbp
+  leave
   ret
 
 %macro gol_draw_cell 2

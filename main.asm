@@ -5,14 +5,10 @@ jmp main
 %include "./lib/screen.asm"
 %include "./lib/gol.asm"
 
-;byte;byte;byte;byte;byte;byte;byte;byte;byte;byte;byte;byte;byte;byte;byte;byte; 1 byte
-;word     ; word    ; word    ;word     ;word     ;word     ;word     ;word     ; 2 byte
-;dword              ;dword              ;dword              ;dword              ; 4 byte
-;qword                                  ;qword                                  ; 8 byte
-
 main:
   push rbp
   mov rbp, rsp
+	sub rsp, 16
 
   mov qword [rbp-8], 0 ; loop
 
@@ -30,12 +26,12 @@ main:
 		call gol_display_buffer
 
 		inc qword [rbp-8]
-		cmp qword [rbp-8], 20
+		cmp qword [rbp-8], 5
 		jl main_loop
 
   call int_exit
 
-  pop rbp
+  leave
   ret
 
 data:

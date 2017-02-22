@@ -18,6 +18,7 @@ screen_init:
 screen_get_dot:
   push rbp
   mov rbp, rsp
+	sub rsp, 24
 
   mov qword [rbp-8], rdi ; x
   mov qword [rbp-16], rsi ; y
@@ -27,7 +28,7 @@ screen_get_dot:
   add r10, qword [ebp-8]
   mov al, byte [screen + r10]
 
-  pop rbp
+  leave
   ret
 
 ; rdi x
@@ -36,6 +37,7 @@ screen_get_dot:
 screen_set_dot:
   push rbp
   mov rbp, rsp
+	sub rsp, 24
 
   mov qword [rbp-8], rdi ; x
   mov qword [rbp-16], rsi ; y
@@ -45,7 +47,7 @@ screen_set_dot:
   add r10, qword [ebp-8]
   mov [screen + r10], dl
 
-  pop rbp
+  leave
   ret
 
 ; rdi x
