@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 
-import curses, time, os
+import curses, time
+
+import sys, select, tty, termios # for keyboard
+
+from threading import Thread
 from unicorn import *
 from unicorn.x86_const import *
 
@@ -10,6 +14,16 @@ log = open("./debugger.log", "w")
 width = 100
 height = 50
 ADDRESS = 0x0
+
+KEYBOARD_BUFFER = 0x41
+KEYBOARD_THREAD = True
+
+class Keyboard(Thread):
+  def __init__(self):
+    Thread.__init__(self)
+
+  def run(self):
+    KEYBOARD_BUFFER = "qsdf"
 
 def debug(msg):
   log.write(msg + "\n")
@@ -55,6 +69,9 @@ def hook_intr(uc, intno, user_data):
     r14 = uc.reg_read(UC_X86_REG_R14)
     debug("r10: 0x{:0>10X} r11: 0x{:0>10X}  r12: 0x{:0>10X} r13: 0x{:0>10X} r14: 0x{:0>10}".format(r10, r11, r12, r13, r14))
 
+  elif intno == 0x4: # get_keyboard
+    uc.reg_write(UC_X86_REG_EAX, KEYBOARD_BUFFER)
+
   elif intno == 0xFF: # exit
     debug("exit")
     uc.emu_stop()
@@ -72,7 +89,11 @@ def run(mode, code):
     print("ERROR: %s" % e)
 
 with open("./main", "rb") as binary_file:
+  keyboard = Keyboard()
+  keyboard.start()
+
   data = binary_file.read()
   debug("\n\n********************** BEGIN DEBUGGER SESSION *************************")
   run(UC_MODE_64, data)
+  KEYBOARD_THREAD = False
   log.close()
