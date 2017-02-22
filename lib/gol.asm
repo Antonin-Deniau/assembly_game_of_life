@@ -46,7 +46,7 @@ gol_do_iteration:
 
 gol_display_buffer:
 	push rbp
-	mov  rbp, rsp
+	mov rbp, rsp
 	sub rsp, 16
 
   mov qword [rbp-8], 0 ; offset
@@ -154,6 +154,8 @@ gol_test_cell:
   call gol_dead_or_alive
 
   ; test cell state
+	; Une cellule morte possédant exactement trois voisines vivantes devient vivante (elle naît).
+	; Une cellule vivante possédant deux ou trois voisines vivantes le reste, sinon elle meurt.
   cmp rax, 1
   je gtc_is_alive
   gtc_is_dead:
@@ -177,25 +179,32 @@ gol_test_cell:
   leave
   ret
 
-%macro gol_draw_cell 2
-  mov rdi, %1
-  mov rsi, %2
-  mov rdx, "#"
-  call screen_set_dot
-%endmacro
-
 ; create a test glider
 gol_create_glider:
-  push rbp
-  mov rbp, rsp
+	push rbp
+	mov rbp, rsp
+	sub rsp, 24
 
-  gol_draw_cell 2, 4
-  gol_draw_cell 3, 5
-  gol_draw_cell 4, 5
-  gol_draw_cell 5, 3
-  gol_draw_cell 5, 4
-  gol_draw_cell 5, 5
+  mov qword [rbp-8],  rdi ; x
+  mov qword [rbp-16], rsi ; y
 
-  pop rbp
+	%macro gcg_draw_cell 2
+		mov rdi, [rbp-8]
+		mov rsi, [rbp-16]
+
+		add rdi, %1
+		add rsi, %2
+
+		mov rdx, "#"
+		call screen_set_dot
+	%endmacro
+
+  gcg_draw_cell 1, 0
+  gcg_draw_cell 2, 1
+  gcg_draw_cell 0, 2
+  gcg_draw_cell 1, 2
+  gcg_draw_cell 2, 2
+
+  leave
   ret
 

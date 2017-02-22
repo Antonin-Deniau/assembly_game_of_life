@@ -13,6 +13,9 @@ main:
   mov qword [rbp-8], 0 ; loop
 
   call screen_init
+
+	mov rdi, 10
+	mov rsi, 10
   call gol_create_glider
 
   main_loop:
