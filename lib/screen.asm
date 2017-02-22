@@ -22,10 +22,9 @@ screen_get_dot:
   mov qword [rbp-8], rdi ; x
   mov qword [rbp-16], rsi ; y
 
-	mov r10, 0
-  mov r10, qword [ebp-8]
+  mov r10, qword [ebp-16]
   imul r10, 100
-  add r10, qword [ebp-16]
+  add r10, qword [ebp-8]
   mov al, byte [screen + r10]
 
   pop rbp
@@ -38,11 +37,13 @@ screen_set_dot:
   push rbp
   mov rbp, rsp
 
-  mov rax, rdi
+  mov qword [rbp-8], rdi ; x
+  mov qword [rbp-16], rsi ; y
 
-  imul rax, 100
-  add rax, rsi
-  mov [screen + rax], dl
+  mov r10, qword [ebp-16]
+  imul r10, 100
+  add r10, qword [ebp-8]
+  mov [screen + r10], dl
 
   pop rbp
   ret
@@ -59,16 +60,8 @@ screen_test_in:
 	cmp rdi, 100
 	jg sti_end
 
-  ; test if x < 0
-	cmp rdi, 0
-	jg sti_end
-
   ; test if y > 50
 	cmp rsi, 50
-	jg sti_end
-
-  ; test if y < 0
-	cmp rsi, 0
 	jg sti_end
 
   mov rax, 1

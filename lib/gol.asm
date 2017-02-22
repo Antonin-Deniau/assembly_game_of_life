@@ -19,28 +19,26 @@ gol_do_iteration:
         mov r12, " "
       gdi_is_cell_alive:
 
-      ;; r10 = (x * 100) + y
-      mov r10, 0
-      mov r10, qword [rbp-8]
+      ;; r10 = (y * 100) + x
+      mov r10, qword [rbp-16]
       imul r10, 100
-      add r10, qword [rbp-16]
+      add r10, qword [rbp-8]
 
       ;; [buffer + pos] = char
       mov r11, screen + 5000
       mov [r11 + r10], r12b
 
-      ;; while y <= 100
+      ;; while y <= 50
       inc qword [rbp-16]
-      cmp qword [rbp-16], 100
+      cmp qword [rbp-16], 50
       jle gdi_loop_y
 
     mov qword [rbp-16], 0
 
     ;; while x <= 50
     inc qword [rbp-8]
-    cmp qword [rbp-8], 50
+    cmp qword [rbp-8], 100
     jle gdi_loop_x
-
 
   pop rbp
   ret
@@ -59,7 +57,6 @@ gol_display_buffer:
     mov byte [screen + r11], r12b ; [screen + offset] = char
 
 		inc qword [rbp-8]
-    mov rax, 6
     cmp qword [rbp-8], 5000
     jle gdb_loop
 
@@ -87,15 +84,14 @@ gol_test_cell:
   push rbp
   mov rbp, rsp
 
-  mov qword [rbp-8], rdi ; x r11
-  mov qword [rbp-16], rsi ; y r12
+  mov qword [rbp-8], rdi  ; x
+  mov qword [rbp-16], rsi ; y
   mov qword [rbp-32], 0
 
   %macro gtc_test_dot 1
     ;; Manage walls
     mov rdi, qword [rbp-8]
     mov rsi, qword [rbp-16]
-		int 3
 		call screen_test_in
 
 		cmp rax, 1
@@ -115,9 +111,7 @@ gol_test_cell:
 		gtc_macro_end_%1:
   %endmacro
 
-  ;; WORK AS EXPECTED
   ; upper left
-	int 3
   sub qword [rbp-8], 1
   sub qword [rbp-16], 1
 
