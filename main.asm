@@ -5,6 +5,11 @@ jmp main
 %include "./lib/screen.asm"
 %include "./lib/gol.asm"
 
+;byte;byte;byte;byte;byte;byte;byte;byte;byte;byte;byte;byte;byte;byte;byte;byte; 1 byte
+;word     ; word    ; word    ;word     ;word     ;word     ;word     ;word     ; 2 byte
+;dword              ;dword              ;dword              ;dword              ; 4 byte
+;qword                                  ;qword                                  ; 8 byte
+
 main:
   push rbp
   mov rbp, rsp
