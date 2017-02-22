@@ -21,7 +21,7 @@ main:
   main_loop:
 		call int_refresh_screen
 
-    mov rdi, 1
+    mov rdi, 500
 		call int_sleep
 
 		call gol_do_iteration
@@ -29,7 +29,7 @@ main:
 		call gol_display_buffer
 
 		inc qword [rbp-8]
-		cmp qword [rbp-8], 5
+		cmp qword [rbp-8], 100
 		jl main_loop
 
   call int_exit

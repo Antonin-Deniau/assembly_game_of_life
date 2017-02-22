@@ -40,7 +40,7 @@ def hook_intr(uc, intno, user_data):
   elif intno == 0x2: # sleep
     debug("sleep")
     rax = uc.reg_read(UC_X86_REG_RAX)
-    time.sleep(rax)
+    time.sleep(rax / 1000)
 
   elif intno == 0x3: # debug
     debug("debug")
