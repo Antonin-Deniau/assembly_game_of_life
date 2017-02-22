@@ -34,16 +34,14 @@ def draw_screen(uc):
 
 def hook_intr(uc, intno, user_data):
   if intno == 0x1: # refresh
-    debug("draw")
     draw_screen(uc)
 
   elif intno == 0x2: # sleep
-    debug("sleep")
     rax = uc.reg_read(UC_X86_REG_RAX)
     time.sleep(rax / 1000)
 
   elif intno == 0x3: # debug
-    debug("debug")
+    debug("\n\n*** breakpoint ***")
     rdi = uc.reg_read(UC_X86_REG_RDI)
     rsi = uc.reg_read(UC_X86_REG_RSI)
     rsp = uc.reg_read(UC_X86_REG_RSP)

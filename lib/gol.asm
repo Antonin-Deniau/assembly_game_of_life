@@ -179,7 +179,17 @@ gol_test_cell:
   leave
   ret
 
-; create a test glider
+%macro gol_draw_cell 2
+	mov rdi, [rbp-8]
+	mov rsi, [rbp-16]
+
+	add rdi, %1
+	add rsi, %2
+
+	mov rdx, "#"
+	call screen_set_dot
+%endmacro
+
 gol_create_glider:
 	push rbp
 	mov rbp, rsp
@@ -188,23 +198,39 @@ gol_create_glider:
   mov qword [rbp-8],  rdi ; x
   mov qword [rbp-16], rsi ; y
 
-	%macro gcg_draw_cell 2
-		mov rdi, [rbp-8]
-		mov rsi, [rbp-16]
-
-		add rdi, %1
-		add rsi, %2
-
-		mov rdx, "#"
-		call screen_set_dot
-	%endmacro
-
-  gcg_draw_cell 1, 0
-  gcg_draw_cell 2, 1
-  gcg_draw_cell 0, 2
-  gcg_draw_cell 1, 2
-  gcg_draw_cell 2, 2
+  gol_draw_cell 1, 0
+  gol_draw_cell 2, 1
+  gol_draw_cell 0, 2
+  gol_draw_cell 1, 2
+  gol_draw_cell 2, 2
 
   leave
   ret
 
+gol_create_pentadecathlon:
+	push rbp
+	mov rbp, rsp
+	sub rsp, 24
+
+  mov qword [rbp-8],  rdi ; x
+  mov qword [rbp-16], rsi ; y
+
+  gol_draw_cell 1, 0
+  gol_draw_cell 1, 1
+
+  gol_draw_cell 0, 2
+  gol_draw_cell 2, 2
+
+  gol_draw_cell 1, 3
+  gol_draw_cell 1, 4
+  gol_draw_cell 1, 5
+  gol_draw_cell 1, 6
+
+  gol_draw_cell 0, 7
+  gol_draw_cell 2, 7
+
+  gol_draw_cell 1, 8
+  gol_draw_cell 1, 9
+
+  leave
+  ret

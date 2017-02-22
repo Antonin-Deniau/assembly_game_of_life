@@ -18,6 +18,10 @@ main:
 	mov rsi, 10
   call gol_create_glider
 
+	mov rdi, 5
+	mov rsi, 20
+  call gol_create_pentadecathlon
+
   main_loop:
 		call int_refresh_screen
 
