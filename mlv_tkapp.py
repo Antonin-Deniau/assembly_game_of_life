@@ -1,5 +1,3 @@
-from threading import Thread
-
 from tkinter import * 
 
 from mlv_screen import *
@@ -12,13 +10,14 @@ class TkApp(Tk):
 
     self.label = Label(text="My little VM")
 
-    self.cpu = Cpu()
+    self.binary = None
 
-    self.cpu.attach(Screen(self)) # a changer
-    self.cpu.attach(Debugger("./debugger.log")) # a changer
+    self.devices = []
+    self.devices.append(Screen(self)) # a changer
+    self.devices.append(Debugger("./debugger.log")) # a changer
 
   def run_binary(self): # a changer
-    self.cpu.run()
+    Cpu(self.devices, self.binary).start()
 
   def load_binary(self, binary):
-    self.cpu.load_in_memory(binary)
+    self.binary = binary
