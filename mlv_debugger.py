@@ -1,4 +1,4 @@
-class Debugger
+class Debugger:
   def __init__(self, logname):
     self.logname = logname
     self.log = open(self.logname, "w")
@@ -8,14 +8,14 @@ class Debugger
     if intno == 0x1:
       self.print_infos(uc)
 
-  def self.p(self, string):
+  def p(self, string):
     self.log.write(string)
     self.log.flush()
 
   def handle_exit(self):
     self.log.close()
 
-  def print_infos(self, uc)
+  def print_infos(self, uc):
     if intno == 0x3:
       self.p("\n\n*** breakpoint ***")
       rdi = uc.reg_read(UC_X86_REG_RDI)
