@@ -17,7 +17,7 @@ class TkApp(Tk):
     self.devices.append(Debugger("./debugger.log")) # a changer
 
   def run_binary(self): # a changer
-    Cpu(self.devices, self.binary).start()
+    self.cpu = Cpu(self.devices, self.binary).start()
 
   def load_binary(self, binary):
     self.binary = binary

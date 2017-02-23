@@ -28,14 +28,15 @@ class Screen:
   def draw_dots(self, matrix):
     lines = [matrix[i:i + SCREEN_WIDTH] for i in range(0, len(matrix), SCREEN_WIDTH)]
 
-    for x in xrange(SCREEN_WIDTH):
-      for y in xrange(SCREEN_HEIGHT):
-        dot = chr(lines[x][y])
+    for x in xrange(SCREEN_HEIGHT):
+      for y in xrange(SCREEN_WIDTH):
 
         try:
-          self.tk.canvas.create_text(x * PIX_WIDTH + PIX_WIDTH, y * PIX_HEIGHT + PIX_HEIGHT, text=dot, font="Arial 10", fill="white")
+          dot = chr(lines[x][y])
+          if dot != " ":
+            self.tk.canvas.create_text(x * PIX_WIDTH + PIX_WIDTH, y * PIX_HEIGHT + PIX_HEIGHT, text=dot, font="Arial 10", fill="white")
         except:
-          self.tk.canvas.create_text(x * PIX_WIDTH + PIX_WIDTH, y * PIX_HEIGHT + PIX_HEIGHT, text="?", font="Arial 10", fill="white")
+          "do noting"
 
   def handle_int(self, uc, intno):
     if intno == 0x1:
@@ -44,5 +45,6 @@ class Screen:
   def draw_screen(self, uc):
     offset = uc.reg_read(UC_X86_REG_RAX)
     matrix = uc.mem_read(offset, SCREEN_WIDTH * SCREEN_HEIGHT)
+    self.tk.canvas.delete(ALL)
     self.draw_dots(matrix)
-    self.tk.canvas.delete("all")
+    self.tk.update()

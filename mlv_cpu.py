@@ -17,9 +17,8 @@ def run(hook_intr, binary):
 
   mu.emu_start(ADDRESS, ADDRESS + len(binary))
 
-class Cpu():#Thread):
+class Cpu:
   def __init__(self, devices, binary):
-    #Thread.__init__(self)
     self.devices = devices
     self.binary = binary
 
