@@ -23,11 +23,10 @@ class Screen:
     self.tk.canvas.pack()
 
   def callback(self, event):
-    #self.tk.focus_set()
     print "clicked at", event.x, event.y
 
   def draw_dots(self, matrix):
-    lines = [matrix[i:i + width] for i in range(0, len(matrix), width)]
+    lines = [matrix[i:i + SCREEN_WIDTH] for i in range(0, len(matrix), SCREEN_WIDTH)]
 
     for x in xrange(SCREEN_WIDTH):
       for y in xrange(SCREEN_HEIGHT):
@@ -43,7 +42,7 @@ class Screen:
       self.draw_screen(uc)
 
   def draw_screen(self, uc):
-    offset = self.uc.reg_read(UC_X86_REG_RAX)
-    matrix = self.uc.mem_read(offset, SCREEN_WIDTH * SCREEN_HEIGHT)
+    offset = uc.reg_read(UC_X86_REG_RAX)
+    matrix = uc.mem_read(offset, SCREEN_WIDTH * SCREEN_HEIGHT)
     self.draw_dots(matrix)
     self.tk.canvas.delete("all")

@@ -11,6 +11,7 @@ if len(sys.argv) == 2:
     app = TkApp()
 
     app.load_binary(binary)
+    app.run_binary()
 
     app.mainloop()
 

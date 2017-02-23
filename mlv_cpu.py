@@ -31,7 +31,7 @@ class Cpu:
     self.mu.emu_start(ADDRESS, ADDRESS + len(self.code))
 
   def hook_intr(self, uc, intno, user_data):
-    for device in devices:
+    for device in self.devices:
       device.handle_int(uc, intno)
 
     if intno == 0x2: # sleep
