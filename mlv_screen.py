@@ -1,4 +1,5 @@
 from unicorn.x86_const import *
+from WCK import Widget
 from tkinter import * 
 
 #self.root.bind("<Key>", key) KEYBOARD
@@ -13,6 +14,33 @@ PIX_WIDTH = 7
 
 WINDOW_WIDTH = SCREEN_WIDTH * PIX_WIDTH
 WINDOW_HEIGHT = SCREEN_HEIGHT * PIX_HEIGHT
+
+
+class MlvCanvas(Widget):
+  ui_option_width = 100
+  ui_option_height = 100
+
+  def __init__(self, master, **options):
+    self.stack = []
+    self.ui_init(master, options)
+
+  #
+  # implementation
+  def ui_handle_config(self):
+    return int(self.ui_option_width), int(self.ui_option_height)
+
+  def ui_handle_clear(self, draw, x0, y0, x1, y1):
+    pass
+
+  def ui_handle_repair(self, draw, x0, y0, x1, y1):
+    # redraw entire stack into a pixmap
+    pixmap = self.ui_pixmap(x1, y1)
+    pixmap.rectangle(
+    (x0, y0, x1, y1), self.ui_brush(self.ui_option_background)
+    )
+    for action, xy, args in self.stack:
+      getattr(pixmap, action)(xy, *args)
+      draw.paste(pixmap)
 
 class Screen:
   def __init__(self, tk):
